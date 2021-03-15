@@ -3,6 +3,13 @@ from tkinter import *
 
 class app():
     
+
+    def getObjectsExport(self):
+
+        lista = self.frameDesigner.winfo_children()
+        print(lista)
+
+
     def deletePropertys(self):
         count = 0
         size = len(self.propertys)
@@ -53,11 +60,23 @@ class app():
     def createProperties(self):
 
         btnProperties = ["background","borderwidth","text","relief"]
+        btnProperties = []
 
-        
+
+        #all = self.objs[self.objectSelected].config()
+        #print(all)
+
+        for item in self.objs[self.objectSelected].keys():
+            print(item)
+            btnProperties.append(item)
+            #print(self.objs[self.objectSelected].cget(item))
+
+
 
         properties = btnProperties
 
+        
+        
         propertyCount = len(properties)
 
       
@@ -72,18 +91,26 @@ class app():
             propertyLabel = "Label" + propertyName
             propertyEntry = "Entry" + propertyName
 
+            #print(len(propertyLabel))
+            labelText = properties[count]
+
+            if len(labelText) > 12:
+                labelText = labelText[:11] + "..."
+
+            print(propertyName)
+
             x = self.objs[self.objectSelected].cget(propertyName)
             
 
-            self.propertys[propertyLabel] = Label(self.FrameProperties,text=properties[count],bg="#242526",fg='white')
+            self.propertys[propertyLabel] = Label(self.FrameProperties,text=labelText,bg="#242526",fg='white')
             self.propertys[propertyLabel].grid(column=0,row=count)
             
-            self.propertys[propertyEntry] = Entry(self.FrameProperties,width=10)
+            self.propertys[propertyEntry] = Entry(self.FrameProperties,width=15)
             self.propertys[propertyEntry].grid(column=1,row=count)
 
             self.propertys[propertyEntry].insert(0,x)
             
-            print(x)
+            #print(x)
 
             count = count + 1
 
@@ -195,14 +222,43 @@ class app():
 
 
 
-        self.FrameProperties = Frame(self.janela,bg='#242526',height=210,width=150,highlightbackground="#FFFFFF",highlightthickness=1)
+        #self.FrameProperties = Frame(self.janela,bg='#242526',height=210,width=150,highlightbackground="#FFFFFF",highlightthickness=1)
+        #self.FrameProperties.place(x=500,y=180,height=210,width=150)
         
         
-        self.FrameProperties.place(x=500,y=180,height=210,width=150)
-        
+
+        ######             preciso ver essa programacao     ###########
+
+        container = Frame(self.janela,bg = '#242526',highlightbackground="#FFFFFF",highlightthickness=1)
+        container.place(x=500,y=180,height=210,width=197) #coloca na janela
+
+        canvas = Canvas(container,bg = '#242526')
+        canvas.place(x=0,y=0,height=210,width=180) #canvas para controle y dentro do container
+
+        scrollbar = Scrollbar(container, orient="vertical", command=canvas.yview) 
+        scrollbar.pack(side="right", fill="y") #criando a scroll bar dentro do container
+
+        self.FrameProperties = Frame(canvas,bg = '#242526') #frame dentro do canvas q vai ter todas propriedades
+
+        self.FrameProperties.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=self.FrameProperties, anchor="nw")
+
+        canvas.configure(yscrollcommand=scrollbar.set) #define a scrollbar como a pos y do canvas
+
+        ################################################################
+
         
         apply = Button(text="apply",command=self.apply)
-        apply.place(x=660,y=240)
+        apply.place(x=640,y=50)
+
+        export = Button(text="export",command=self.getObjectsExport)
+        export.place(x=640,y=100)
        
 
 
