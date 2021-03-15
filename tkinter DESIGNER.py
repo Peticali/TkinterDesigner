@@ -5,7 +5,6 @@ from pathlib import Path
 class app():
     
     def attachProperties(self):
-        print('fuedaq')
 
         '''for child in self.container.winfo_children():
             child.destroy()
@@ -139,9 +138,12 @@ class app():
         code = code + "\napp = app()"
 
 
-        file = open(self.homeDir + "/Desktop/code.py", "w")
-        n = file.write(code)
-        file.close()
+        try:
+            file = open(self.homeDir + "/Desktop/code.py", "w")
+            n = file.write(code)
+            file.close()
+        except:
+            pass
 
         exec(code)
 
@@ -225,10 +227,17 @@ class app():
         #all = self.objs[self.objectSelected].config()
         #print(all)
 
-        for item in self.objs[self.objectSelected].keys():
-            print(item)
-            btnProperties.append(item)
-            #print(self.objs[self.objectSelected].cget(item))
+        if self.objectSelected != "root":
+
+            for item in self.objs[self.objectSelected].keys():
+                print(item)
+                btnProperties.append(item)
+                #print(self.objs[self.objectSelected].cget(item))
+        else:
+            for item in self.janela.keys():
+                print(item)
+                btnProperties.append(item)
+                #print(self.objs[self.objectSelected].cget(item)) 
 
 
 
@@ -257,8 +266,11 @@ class app():
                 labelText = labelText[:11] + "..."
 
             #print(propertyName)
-
-            x = self.objs[self.objectSelected].cget(propertyName)
+ 
+            if self.objectSelected != "root":
+                x = self.objs[self.objectSelected].cget(propertyName)
+            else:
+                x = self.janela.cget(propertyName)
             
 
             self.propertys[propertyLabel] = Label(self.FrameProperties,text=labelText,bg="#242526",fg='white')
@@ -351,7 +363,11 @@ class app():
     def soltar(self,event):
         self.soltar = 1
 
-    
+    def clickFrame(self,event):
+        self.objectSelected = "root"
+        self.createProperties()
+
+
     def __init__(self):
         self.janela = Tk()
         
@@ -441,6 +457,8 @@ class app():
         self.labelMove.bind('<Button-1>', self.moveObj)
 
         self.labelMove.bind('<ButtonRelease-1>', self.soltar)
+
+        self.frameDesigner.bind('<Button-1>', self.clickFrame)
 
         #self.janela.bind('<<ListboxSelect>>', self.listboxCall)
 
