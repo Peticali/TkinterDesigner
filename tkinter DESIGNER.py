@@ -4,6 +4,91 @@ from pathlib import Path
 
 class app():
     
+    def attachProperties(self):
+        print('fuedaq')
+
+        '''for child in self.container.winfo_children():
+            child.destroy()
+        self.container.destroy()'''
+
+        self.propertiesWindow.destroy()
+        self.detach.place(x=640,y=150)
+
+        self.container = Frame(self.janela,bg = '#242526',highlightbackground="#FFFFFF",highlightthickness=1)
+        self.container.place(x=500,y=180,height=210,width=197) #coloca na janela
+
+        canvas = Canvas(self.container,bg = '#242526')
+        canvas.place(x=0,y=0,height=210,width=180) #canvas para controle y dentro do container
+
+        scrollbar = Scrollbar(self.container, orient="vertical", command=canvas.yview) 
+        scrollbar.pack(side="right", fill="y") #criando a scroll bar dentro do container
+
+        self.FrameProperties = Frame(canvas,bg = '#242526') #frame dentro do canvas q vai ter todas propriedades
+
+        self.FrameProperties.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=self.FrameProperties, anchor="nw")
+
+        canvas.configure(yscrollcommand=scrollbar.set) #define a scrollbar como a pos y do canvas
+
+        self.listboxCall(event=None)
+        
+
+
+
+    def propertyDetach(self):
+            
+        for child in self.container.winfo_children():
+            child.destroy()
+
+        self.container.destroy()
+
+        self.detach.place_forget()
+            
+        self.propertiesWindow = Tk()
+
+        screen_width = self.propertiesWindow.winfo_screenwidth()
+        screen_height = self.propertiesWindow.winfo_screenheight()
+
+        screen_width = str(screen_width - 200)
+        screen_height = '0'
+
+        self.propertiesWindow.geometry("200x500+" +screen_width + '+' + screen_height)
+
+        self.container = Frame(self.propertiesWindow,bg = '#242526',highlightbackground="#FFFFFF",highlightthickness=1)
+        self.container.place(x=0,y=0,width=197,height=500) #coloca na janela
+
+        canvas = Canvas(self.container,bg = '#242526')
+        canvas.place(x=0,y=0,height=500,width=180) #canvas para controle y dentro do container
+
+        scrollbar = Scrollbar(self.container, orient="vertical", command=canvas.yview) 
+        scrollbar.pack(side="right", fill="y") #criando a scroll bar dentro do container
+
+        self.FrameProperties = Frame(canvas,bg = '#242526') #frame dentro do canvas q vai ter todas propriedades
+
+        self.FrameProperties.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=self.FrameProperties, anchor="nw")
+
+        canvas.configure(yscrollcommand=scrollbar.set) #define a scrollbar como a pos y do canvas
+
+        self.propertiesWindow.protocol("WM_DELETE_WINDOW", self.attachProperties)
+
+        self.listboxCall(event=None)
+
+
+
+
 
     def getObjectsExport(self):
 
@@ -61,7 +146,7 @@ class app():
         exec(code)
 
 
-        print(code)
+        #print(code)
 
 
     
@@ -69,6 +154,8 @@ class app():
     def openCommand(self):
         x = self.janela.winfo_children() 
         print(x)
+
+        
 
 
     def deleteComponent(self):
@@ -88,7 +175,10 @@ class app():
         while size > count:
             x = list(self.propertys.keys())[count]
 
-            self.propertys[x].destroy()
+            try:
+                self.propertys[x].destroy()
+            except:
+                pass
 
             print(x)
 
@@ -186,25 +276,28 @@ class app():
 
     def listboxCall(self,event):
         
-        self.objectSelected = self.listObjectsGUI.get(self.listObjectsGUI.curselection())
-        print(self.objectSelected)
+        try:
+            self.objectSelected = self.listObjectsGUI.get(self.listObjectsGUI.curselection())
+            print(self.objectSelected)
 
-        x = self.objs[self.objectSelected].winfo_rootx() - self.frameDesigner.winfo_rootx()
-        y = self.objs[self.objectSelected].winfo_rooty() - self.frameDesigner.winfo_rooty()
+            x = self.objs[self.objectSelected].winfo_rootx() - self.frameDesigner.winfo_rootx()
+            y = self.objs[self.objectSelected].winfo_rooty() - self.frameDesigner.winfo_rooty()
 
-        print(x,y)
-        
+            print(x,y)
+            
 
-        objType= self.objs[self.objectSelected]
-        
-
-
-        print(objType)
+            objType= self.objs[self.objectSelected]
+            
 
 
-        
-        self.labelMove.place(x=x,y=y-20)
-        self.createProperties()
+            print(objType)
+
+
+            
+            self.labelMove.place(x=x,y=y-20)
+            self.createProperties()
+        except:
+            pass
 
 
     def moveObj(self,event):
@@ -305,13 +398,13 @@ class app():
 
         ######             preciso ver essa programacao     ###########
 
-        container = Frame(self.janela,bg = '#242526',highlightbackground="#FFFFFF",highlightthickness=1)
-        container.place(x=500,y=180,height=210,width=197) #coloca na janela
+        self.container = Frame(self.janela,bg = '#242526',highlightbackground="#FFFFFF",highlightthickness=1)
+        self.container.place(x=500,y=180,height=210,width=197) #coloca na janela
 
-        canvas = Canvas(container,bg = '#242526')
+        canvas = Canvas(self.container,bg = '#242526')
         canvas.place(x=0,y=0,height=210,width=180) #canvas para controle y dentro do container
 
-        scrollbar = Scrollbar(container, orient="vertical", command=canvas.yview) 
+        scrollbar = Scrollbar(self.container, orient="vertical", command=canvas.yview) 
         scrollbar.pack(side="right", fill="y") #criando a scroll bar dentro do container
 
         self.FrameProperties = Frame(canvas,bg = '#242526') #frame dentro do canvas q vai ter todas propriedades
@@ -339,6 +432,8 @@ class app():
         export = Button(text="delete",command=self.deleteComponent)
         export.place(x=640,y=100)
        
+        self.detach = Button(text="detach",command=self.propertyDetach,bg='#18191A',borderwidth=0,fg='white')
+        self.detach.place(x=640,y=150)
 
 
         self.labelMove = Label(self.frameDesigner,text='MOVE')
