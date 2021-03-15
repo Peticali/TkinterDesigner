@@ -24,8 +24,6 @@ class app():
         count = 0
         size = len(self.propertys)
 
-        
-
         print(size)
 
         while size > count:
@@ -54,7 +52,9 @@ class app():
 
     def createProperties(self):
 
-        btnProperties = ["bg","borderwidth"]
+        btnProperties = ["background","borderwidth","text","relief"]
+
+        
 
         properties = btnProperties
 
@@ -72,14 +72,18 @@ class app():
             propertyLabel = "Label" + propertyName
             propertyEntry = "Entry" + propertyName
 
+            x = self.objs[self.objectSelected].cget(propertyName)
             
 
             self.propertys[propertyLabel] = Label(self.FrameProperties,text=properties[count],bg="#242526",fg='white')
             self.propertys[propertyLabel].grid(column=0,row=count)
             
-            self.propertys[propertyEntry] = Entry(self.FrameProperties,width=5)
+            self.propertys[propertyEntry] = Entry(self.FrameProperties,width=10)
             self.propertys[propertyEntry].grid(column=1,row=count)
+
+            self.propertys[propertyEntry].insert(0,x)
             
+            print(x)
 
             count = count + 1
 
@@ -148,11 +152,6 @@ class app():
             name = 'Label' + str(self.countButton)
             self.objs[name] = Label(self.frameDesigner,text='Label')
             self.objs[name].place(x=centerx,y=centery)
-
-
-
-
-
 
         
         self.listboxIndex = self.listboxIndex + 1
