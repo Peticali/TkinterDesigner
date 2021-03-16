@@ -37,7 +37,7 @@ class app():
 
         canvas.configure(yscrollcommand=scrollbar.set) #define a scrollbar como a pos y do canvas
 
-        self.listboxCall(event=None)
+        self.createProperties()
         
 
 
@@ -85,17 +85,52 @@ class app():
 
         self.propertiesWindow.protocol("WM_DELETE_WINDOW", self.attachProperties)
 
-        self.listboxCall(event=None)
+        self.createProperties()
 
 
 
 
 
     def getObjectsExport(self):
-
+        
+        countScript = 0
         code = """from tkinter import * 
 
-class app():
+class app():"""
+
+
+        scriptCount = len(self.objScripts)
+
+
+        
+        while countScript < scriptCount:
+            widgetName = list(self.objScripts.keys())[countScript]
+            widgetScript = self.objScripts[widgetName]
+            widgetScript = '        '.join(('\n'+widgetScript.lstrip()).splitlines(True))
+
+
+          
+
+
+
+            StrFunction = '    def ' + widgetName + '(self):\n'
+            StrFunction = StrFunction  + widgetScript
+
+            #'\t\t\t'.join(StrFunction.splitlines(True))
+            #StrFunction = '\t\t\t'.join(('\n'+StrFunction.lstrip()).splitlines(True))
+
+
+
+
+
+            print(StrFunction)
+            countScript = countScript + 1
+            code = code + '\n' + StrFunction
+
+
+
+
+        code = code +"""
     def __init__(self):
         self.root = Tk()
         """
@@ -113,7 +148,7 @@ class app():
 
         while count < size: #pega todas as propriedades de todos objetos na tela
             widget = lista[count]
-            print(widget)
+            #print(widget)
 
             type = self.objs[widget].winfo_class() 
         
@@ -125,8 +160,18 @@ class app():
 
             for property in self.objs[widget].keys():
                 
-                value = self.objs[widget].cget(property)
-                string = string + property + '=' +  "'" + str(value) + "'" + ','
+                if property == "command":
+                    try:
+                        widgetScript = self.objScripts[widget]
+                        string = string + property + '=' +  "self." + widget + ','
+                    except:
+                        value = self.objs[widget].cget(property)
+                        string = string + property + '=' +  "'" + str(value) + "'" + ','
+                    
+
+                else:
+                    value = self.objs[widget].cget(property)
+                    string = string + property + '=' +  "'" + str(value) + "'" + ','
 
             
             string = "        " + widget + " = " + string[:-1] + ')' + ".place(x=" + str(x) + ',y=' + str(y) + ')' 
@@ -233,15 +278,27 @@ class app():
         
         script = self.script.get('1.0', 'end-1c')
 
-        self.objScripts[self.objectSelected] = script
+        if script == "":
+         
+            try:
+                del self.objScripts[self.objectSelected]
+            except:
+                pass
+
+        else:
+
+            self.objScripts[self.objectSelected] = script
+
+        self.scripter.destroy()
+
 
 
     def createScriptBox(self,property):
-        scripter = Tk()
+        self.scripter = Tk()
 
-        scripter.geometry("600x430")
+        self.scripter.geometry("600x430")
 
-        self.script = Text(scripter)
+        self.script = Text(self.scripter)
         self.script.pack()
 
         try:
@@ -251,10 +308,10 @@ class app():
             pass
         
 
-        concluir = Button(scripter,text="concluir",command=self.addScriptToWidget)
+        concluir = Button(self.scripter,text="concluir",command=self.addScriptToWidget)
         concluir.pack()
 
-        scripter.mainloop()
+        self.scripter.mainloop()
 
 
 
