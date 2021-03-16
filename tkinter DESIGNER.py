@@ -182,7 +182,9 @@ class app():"""
 
             count = count + 1
 
-        code = code + "\n\t\t#close Objects\n\n" + "        self.root.mainloop()"
+        exportinit =  '        '.join(('\n'+self.initScript.lstrip()).splitlines(True))
+
+        code = code + "\n\t\t#close Objects\n\n" + exportinit + "\n        self.root.mainloop()"
         code = code + "\napp = app()"
 
 
@@ -293,6 +295,13 @@ class app():"""
         self.scripter.destroy()
 
 
+    def setInitString(self):
+        script = self.script.get('1.0', 'end-1c')
+
+        self.initScript = script
+
+        self.scripter.destroy()
+
 
     def createScriptBox(self,property):
         self.scripter = Tk()
@@ -302,15 +311,24 @@ class app():"""
         self.script = Text(self.scripter)
         self.script.pack()
 
-        try:
-            scriptExistent = self.objScripts[self.objectSelected]
-            self.script.insert(INSERT,scriptExistent)
-        except:
-            pass
-        
+        if property != "commandRoot":
 
-        concluir = Button(self.scripter,text="concluir",command=self.addScriptToWidget)
-        concluir.pack()
+            try:
+                scriptExistent = self.objScripts[self.objectSelected]
+                self.script.insert(INSERT,scriptExistent)
+            except:
+                pass
+            
+
+            concluir = Button(self.scripter,text="concluir",command=self.addScriptToWidget)
+            concluir.pack()
+
+        else:
+            scriptExistent = self.initScript
+            self.script.insert(INSERT,scriptExistent)
+            concluir = Button(self.scripter,text="concluir",command=self.setInitString)
+            concluir.pack()
+
 
         self.scripter.mainloop()
 
@@ -397,6 +415,7 @@ class app():"""
                 print(item)
                 btnProperties.append(item)
                 #print(self.objs[self.objectSelected].cget(item)) 
+            btnProperties.append("command")
 
 
         
@@ -437,7 +456,12 @@ class app():"""
             if self.objectSelected != "root":
                 x = self.objs[self.objectSelected].cget(propertyName)
             else:
-                x = self.janela.cget(propertyName)
+                
+                try:
+                    x = self.janela.cget(propertyName)
+                
+                except:
+                    x = ""
             
             
 
@@ -466,8 +490,13 @@ class app():"""
                     self.propertys[btn].grid(column=2,row=count)
 
                 if propertyName == "command":
-                    self.propertys[btn] = Button(self.FrameProperties,bg="white",text='onClick',command=lambda:[app.createScriptBox(self,'command')])
-                    self.propertys[btn].grid(column=1,row=count)
+                    if self.objectSelected != "root":
+
+                        self.propertys[btn] = Button(self.FrameProperties,bg="white",text='onClick',command=lambda:[app.createScriptBox(self,'command')])
+                        self.propertys[btn].grid(column=1,row=count)
+                    else:
+                        self.propertys[btn] = Button(self.FrameProperties,bg="white",text='onClick',command=lambda:[app.createScriptBox(self,'commandRoot')])
+                        self.propertys[btn].grid(column=1,row=count)
 
             
             if propertyName != "command":
@@ -570,6 +599,7 @@ class app():"""
         self.objs = {}
         self.propertys = {}
         self.objScripts = {}
+        self.initScript = "#this script will execute after all widgets are created."
 
 
         self.homeDir = str(Path.home())
