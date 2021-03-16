@@ -174,7 +174,7 @@ class app():"""
                     string = string + property + '=' +  "'" + str(value) + "'" + ','
 
             
-            string = "        " + widget + " = " + string[:-1] + ')' + ".place(x=" + str(x) + ',y=' + str(y) + ')' 
+            string = "        " + 'self.' + widget + " = " + string[:-1] + ')' + ".place(x=" + str(x) + ',y=' + str(y) + ')' 
             
 
             code = code + "\n" + string
