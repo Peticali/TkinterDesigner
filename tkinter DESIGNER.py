@@ -208,6 +208,8 @@ class app():
 
                 x = x.split("Entry")[1]
 
+               
+
 
                 config[x] = get
                 
@@ -235,15 +237,22 @@ class app():
 
         print(button)
 
-        color_code = font = askfont(self.janela)
+        font = askfont(self.janela)
 
         
         print(self.propertys)
 
         self.propertys[entry].delete(0,END)
-        self.propertys[entry].insert(0,color_code)
 
-        self.propertys[button].config(bg=color_code)
+        FontFamily = font["family"].replace(" ","")
+
+        stringFont = FontFamily + " " + str(font["size"]) + " " + font["weight"]
+        
+
+        self.propertys[entry].insert(0,stringFont)
+
+
+        #self.objs[self.objectSelected].config(font=(font["family"],font["size"],font["weight"]))
 
         self.apply()
 
