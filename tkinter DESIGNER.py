@@ -161,7 +161,10 @@ class app():
         f = open(path, "r")
         f.read()
 
+
     def openCommand(self):
+        
+        self.createScriptBox()
         pass
 
 
@@ -225,6 +228,36 @@ class app():
             count = count + 1
 
     #def createFuncButton(self):
+
+    def addScriptToWidget(self):
+        
+        script = self.script.get('1.0', 'end-1c')
+
+        self.objScripts[self.objectSelected] = script
+
+
+    def createScriptBox(self,property):
+        scripter = Tk()
+
+        scripter.geometry("600x430")
+
+        self.script = Text(scripter)
+        self.script.pack()
+
+        try:
+            scriptExistent = self.objScripts[self.objectSelected]
+            self.script.insert(INSERT,scriptExistent)
+        except:
+            pass
+        
+
+        concluir = Button(scripter,text="concluir",command=self.addScriptToWidget)
+        concluir.pack()
+
+        scripter.mainloop()
+
+
+
 
     def setEntryFont(self,property):
         #print(propertyEntry)
@@ -351,7 +384,7 @@ class app():
 
 
 
-            if propertyName == "bg" or "fg" or "font":
+            if propertyName == "bg" or "fg" or "font" or "command":
                 
                 btn = propertyName + 'Button'
                 self.prop[propertyName] = propertyEntry + ',' + btn
@@ -369,11 +402,17 @@ class app():
                     self.propertys[btn] = Button(self.FrameProperties,bg="white",text='..',command=lambda:[app.setEntryFont(self,'font')])
                     self.propertys[btn].grid(column=2,row=count)
 
+                if propertyName == "command":
+                    self.propertys[btn] = Button(self.FrameProperties,bg="white",text='onClick',command=lambda:[app.createScriptBox(self,'command')])
+                    self.propertys[btn].grid(column=1,row=count)
 
-            self.propertys[propertyEntry] = Entry(self.FrameProperties,width=width)
-            self.propertys[propertyEntry].grid(column=1,row=count)
+            
+            if propertyName != "command":
+                self.propertys[propertyEntry] = Entry(self.FrameProperties,width=width)
 
-            self.propertys[propertyEntry].insert(0,x)
+                self.propertys[propertyEntry].grid(column=1,row=count)
+
+                self.propertys[propertyEntry].insert(0,x)
             
             #print(x)
 
@@ -467,6 +506,7 @@ class app():
         
         self.objs = {}
         self.propertys = {}
+        self.objScripts = {}
 
 
         self.homeDir = str(Path.home())
