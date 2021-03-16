@@ -174,8 +174,9 @@ class app():"""
                     string = string + property + '=' +  "'" + str(value) + "'" + ','
 
             
-            string = "        " + 'self.' + widget + " = " + string[:-1] + ')' + ".place(x=" + str(x) + ',y=' + str(y) + ')' 
-            
+            string = "        " + 'self.' + widget + " = " + string[:-1] + ')\n'  
+            string = string + "        " + 'self.' + widget + ".place(x=" + str(x) + ',y=' + str(y) + ')'
+
 
             code = code + "\n" + string
 
@@ -330,21 +331,25 @@ class app():"""
         font = askfont(self.janela)
 
         
-        print(self.propertys)
+        print(font)
 
-        self.propertys[entry].delete(0,END)
+        #print(self.propertys)
 
-        FontFamily = font["family"].replace(" ","")
+        if font != "":
 
-        stringFont = FontFamily + " " + str(font["size"]) + " " + font["weight"]
+            FontFamily = font["family"].replace(" ","")
+
+            stringFont = FontFamily + " " + str(font["size"]) + " " + font["weight"]
         
 
-        self.propertys[entry].insert(0,stringFont)
+        
+            self.propertys[entry].delete(0,END)
+            self.propertys[entry].insert(0,stringFont)
 
 
-        #self.objs[self.objectSelected].config(font=(font["family"],font["size"],font["weight"]))
+            #self.objs[self.objectSelected].config(font=(font["family"],font["size"],font["weight"]))
 
-        self.apply()
+            self.apply()
 
 
     def setEntryColor(self,property):
@@ -361,14 +366,15 @@ class app():"""
         color_code = colorchooser.askcolor(title ="Color")[1]
 
         
-        print(self.propertys)
+        print(color_code)
 
-        self.propertys[entry].delete(0,END)
-        self.propertys[entry].insert(0,color_code)
+        if color_code != None:
+            self.propertys[entry].delete(0,END)
+            self.propertys[entry].insert(0,color_code)
 
-        self.propertys[button].config(bg=color_code)
+            self.propertys[button].config(bg=color_code)
 
-        self.apply()
+            self.apply()
 
 
     def createProperties(self):
