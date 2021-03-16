@@ -1,6 +1,8 @@
 from tkinter import *
-
+from tkinter.filedialog import askopenfilename
+from tkinter import colorchooser
 from pathlib import Path
+from tkfontchooser import askfont
 
 class app():
     
@@ -100,7 +102,7 @@ class app():
 
         frameL = self.frameDesigner.winfo_width()
         frameA = self.frameDesigner.winfo_height()
-        framesize = "self.root.geometry('" + str(frameL) + "x" + str(frameA) + "')\n"
+        framesize = "self.root.geometry('" + str(frameL) + "x" + str(frameA) + "')\n\n\t\t#init Objects"
 
         code = code + framesize
 
@@ -134,7 +136,7 @@ class app():
 
             count = count + 1
 
-        code = code + "\n\n" + "        self.root.mainloop()"
+        code = code + "\n\t\t#close Objects\n\n" + "        self.root.mainloop()"
         code = code + "\napp = app()"
 
 
@@ -153,11 +155,14 @@ class app():
 
     
 
-    def openCommand(self):
-        x = self.janela.winfo_children() 
-        print(x)
+    def openProject(self):
+        path = askopenfilename()
 
-        
+        f = open(path, "r")
+        f.read()
+
+    def openCommand(self):
+        pass
 
 
     def deleteComponent(self):
@@ -217,6 +222,55 @@ class app():
 
             count = count + 1
 
+    #def createFuncButton(self):
+
+    def setEntryFont(self,property):
+        #print(propertyEntry)
+
+        dictio= self.prop[property]
+
+        entry = dictio.split(",")[0]
+
+        button = dictio.split(",")[1]
+
+        print(button)
+
+        color_code = font = askfont(self.janela)
+
+        
+        print(self.propertys)
+
+        self.propertys[entry].delete(0,END)
+        self.propertys[entry].insert(0,color_code)
+
+        self.propertys[button].config(bg=color_code)
+
+        self.apply()
+
+
+    def setEntryColor(self,property):
+        #print(propertyEntry)
+
+        dictio= self.prop[property]
+
+        entry = dictio.split(",")[0]
+
+        button = dictio.split(",")[1]
+
+        print(button)
+
+        color_code = colorchooser.askcolor(title ="Color")[1]
+
+        
+        print(self.propertys)
+
+        self.propertys[entry].delete(0,END)
+        self.propertys[entry].insert(0,color_code)
+
+        self.propertys[button].config(bg=color_code)
+
+        self.apply()
+
 
     def createProperties(self):
 
@@ -240,9 +294,16 @@ class app():
                 #print(self.objs[self.objectSelected].cget(item)) 
 
 
-
+        
         properties = btnProperties
 
+        self.prop = {}
+
+        try:
+            properties.remove("background")
+            properties.remove("foreground")
+        except:
+            pass
         
         
         propertyCount = len(properties)
@@ -254,7 +315,8 @@ class app():
         count = 0
 
         while count < propertyCount:
-            
+            width = 14
+
             propertyName = properties[count]
             propertyLabel = "Label" + propertyName
             propertyEntry = "Entry" + propertyName
@@ -272,11 +334,34 @@ class app():
             else:
                 x = self.janela.cget(propertyName)
             
+            
 
             self.propertys[propertyLabel] = Label(self.FrameProperties,text=labelText,bg="#242526",fg='white')
             self.propertys[propertyLabel].grid(column=0,row=count)
             
-            self.propertys[propertyEntry] = Entry(self.FrameProperties,width=15)
+
+
+
+            if propertyName == "bg" or "fg" or "font":
+                
+                btn = propertyName + 'Button'
+                self.prop[propertyName] = propertyEntry + ',' + btn
+                
+            
+                if propertyName == "bg":
+                    self.propertys[btn] = Button(self.FrameProperties,bg=x,text='..',command=lambda:[app.setEntryColor(self,'bg')])
+                    self.propertys[btn].grid(column=2,row=count)
+                
+                if propertyName == "fg":
+                    self.propertys[btn] = Button(self.FrameProperties,bg=x,text='..',command=lambda:[app.setEntryColor(self,'fg')])
+                    self.propertys[btn].grid(column=2,row=count)
+
+                if propertyName == "font":
+                    self.propertys[btn] = Button(self.FrameProperties,bg="white",text='..',command=lambda:[app.setEntryFont(self,'font')])
+                    self.propertys[btn].grid(column=2,row=count)
+
+
+            self.propertys[propertyEntry] = Entry(self.FrameProperties,width=width)
             self.propertys[propertyEntry].grid(column=1,row=count)
 
             self.propertys[propertyEntry].insert(0,x)
@@ -464,6 +549,8 @@ class app():
 
         self.listObjectsGUI.bind('<ButtonRelease-1>',self.listboxCall)
         #self.listObjectsGUI.bind('<<ListboxSelect>>',self.listboxCall)
+
+        
 
 
         self.janela.mainloop()
