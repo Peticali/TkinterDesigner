@@ -5,5 +5,5 @@ use .rar release if not opening
 
 yeah, i need to separate functions in classes i know
 
-![video](https://user-images.githubusercontent.com/34588988/111573318-13f49f00-8789-11eb-93e3-19a865b5436b.mp4)
 
+[<img src="https://img.youtube.com/vi/E3d1ZVOH-EI/maxresdefault.jpg" width="50%">](https://youtu.be/E3d1ZVOH-EI)
