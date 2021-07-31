@@ -1,10 +1,7 @@
 # TkinterDesigner a tkinter IDE?
 Make and program a Tkinter Window 
 
-use .rar release if not opening
-
-yeah, i need to separate functions in classes i know
-
+Warning: .exe releases are outdated / i'm fixing my old noob code
 
 [<img src="https://img.youtube.com/vi/E3d1ZVOH-EI/maxresdefault.jpg" width="50%">](https://youtu.be/E3d1ZVOH-EI)
 
