@@ -575,7 +575,7 @@ class app():
         if color_code != None:
             self.propertys[entry].delete(0,END)
             self.propertys[entry].insert(0,color_code)
-            self.propertys[button].config(fg=color_code)
+            self.propertys[button].config(bg=color_code)
             self.apply()
 
 
@@ -650,25 +650,25 @@ class app():
                     
                 
                     if propertyName == "bg":
-                        self.propertys[btn] = Button(window,fg=x,text='..',command=lambda:[app.setEntryColor(self,'bg')])
+                        self.propertys[btn] = Label(window,bg=x,text='...')#,command=lambda:[app.setEntryColor(self,'bg')])
+                        self.propertys[btn].bind("<Button-1>", lambda e : self.setEntryColor('bg'))
                         self.propertys[btn].grid(column=2,row=count)
                     
                     if propertyName == "fg":
-                        self.propertys[btn] = Button(window,fg=x,text='..',command=lambda:[app.setEntryColor(self,'fg')])
+                        self.propertys[btn] = Label(window,bg=x,text='...')#,command=lambda:[app.setEntryColor(self,'fg')])
+                        self.propertys[btn].bind("<Button-1>", lambda e : self.setEntryColor('fg'))
                         self.propertys[btn].grid(column=2,row=count)
 
                     if propertyName == "font":
-                        self.propertys[btn] = Button(window,bg="white",text='..',command=lambda:[app.setEntryFont(self,'font')])
+                        self.propertys[btn] = Label(window,bg="white",text='...',command=lambda:[app.setEntryFont(self,'font')])
                         self.propertys[btn].grid(column=2,row=count)
 
                     if propertyName == "command":
                         if self.objectSelected != "root":
-
                             self.propertys[btn] = Button(window,bg="white",text='onClick',command=lambda:[app.createScriptBox(self,'command')])
-                            self.propertys[btn].grid(column=1,row=count)
                         else:
-                            self.propertys[btn] = Button(window,bg="white",text='onClick',command=lambda:[app.createScriptBox(self,'commandRoot')])
-                            self.propertys[btn].grid(column=1,row=count)
+                            self.propertys[btn] = Button(window,bg="white",text='onInit',command=lambda:[app.createScriptBox(self,'commandRoot')])
+                        self.propertys[btn].grid(column=1,row=count)
 
                 
                 if propertyName != "command":
@@ -677,7 +677,7 @@ class app():
                     self.propertys[propertyEntry].insert(0,x)
                         
             
-            else:
+            else: #propery list selection on scriptbox
                 btn = propertyName + 'LabelChooseProp'
                 self.propertys[btn] = Label(window,bg="#242526",text=propertyName,fg="white")
                 self.propertys[btn].grid(column=0,row=count)
@@ -970,7 +970,7 @@ class app():
 
         label1.bind('<Button-1>', lambda event:[app.chooseCompileMethod(self,pill="PyInstaller")])
         label2.bind('<Button-1>', lambda event:[app.chooseCompileMethod(self,pill="Nuitka")])
-        
+    
 
     def __init__(self):
         self.janela = Tk()
